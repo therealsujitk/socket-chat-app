@@ -1,0 +1,23 @@
+body {
+	font-family: 'Recursive', sans-serif;
+}
+
+#header {
+	width: 100%;
+	text-align: center;
+}
+
+#chat-interface {
+	margin-left: 50%;
+	width: 80%;
+	border-style: solid;
+	transform: translate(-50%, 0%);
+}
+
+#users {
+	width: 30%;
+}
+
+#chat {
+	width: 70%;
+}
