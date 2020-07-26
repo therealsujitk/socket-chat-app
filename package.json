@@ -4,5 +4,6 @@
 	"description": "A simple real-time chat application using socket.io for research purpose.",
 	"dependencies": {
 		"express": "^4.17.1",
+		"socket.io": "^2.3.0"
 	}
 }
