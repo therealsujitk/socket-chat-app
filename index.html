@@ -8,12 +8,41 @@
 	<body>
 		<h2 id="header">Chat Application</h2>
 		<table id="chat-interface">
-			<td id="users">
-				Users Online
-			</td>
-			<td id="chat">
-				Chat Interface
-			</td>
+			<tr>
+				<th id="users-header">Online Users</th>
+				<th id="chat-header">User you are texting</th>
+			</tr>
+			<tr>
+				<td id="users">
+				</td>
+				<td id="chat">
+					<div id="messages">
+					</div>
+					<div id="chat-footer">
+						<input id="chat-box" placeholder="Write your message..."></input>
+						<input id="send" type="button" value="Send"></input>
+					</div>
+				</td>
+			</tr>
 		</table>
+		<div id="nickname-modal">
+		</div>
+		<script>
+			function calcHeight() {
+				let headerHeight = document.getElementById('header').offsetHeight;
+				let chatInterfaceHeaderHeight = document.getElementById('chat-header').offsetHeight;
+				
+				let chatInterfaceHeight = window.innerHeight - headerHeight - chatInterfaceHeaderHeight - 25 - 25 - 3;
+				document.documentElement.style.setProperty('--cih', `${chatInterfaceHeight}px`);
+				
+				let chatFooterHeight = document.getElementById('chat-footer').offsetHeight;
+				
+				let messagesHeight = chatInterfaceHeight - chatFooterHeight - 4;
+				document.documentElement.style.setProperty('--mh', `${messagesHeight}px`);
+			}
+			
+			calcHeight();
+			window.addEventListener("resize", calcHeight);
+		</script>
 	</body>
 </html>
