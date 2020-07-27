@@ -20,8 +20,7 @@
 				<td id="users">
 				</td>
 				<td id="chat">
-					<div id="messages">
-					</div>
+					<div id="messages"></div>
 					<div id="chat-footer">
 						<input id="chat-box" placeholder="Write your message..." autocomplete="off"></input>
 						<input id="send" type="button" value="Send" onclick="send()"></input>
@@ -49,8 +48,13 @@
 			window.addEventListener("resize", calcHeight);
 			
 			function send() {
-				let message = document.getElementById('chat-box').value;
-				socket.emit('message', message);
+				let message = document.getElementById('chat-box');
+				socket.emit('message', message.value);
+				
+				let messages = document.getElementById('messages');
+				messages.innerHTML = messages.innerHTML + '<div style="width: 100%; text-align: right;"><div class="message" style="background: #fff; color: #000;">' + message.value + '</div></div>'
+				
+				message.value = '';
 			}
 			
 			document.getElementById('chat-box').addEventListener("keyup", function(e) {
@@ -59,7 +63,8 @@
 			});
 			
 			socket.on('message', (message) => {
-				alert(message);
+				let messages = document.getElementById('messages');
+				messages.innerHTML = messages.innerHTML + '<div style="width: 100%; text-align: left;"><div class="message" style="background: #000; color: #fff;">' + message + '</div></div>'
 			});
 		</script>
 	</body>

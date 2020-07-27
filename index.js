@@ -17,10 +17,10 @@ io.on('connection', (socket) => {
 	});
 	
 	socket.on('message', (message) => {
-		io.emit('message', message);
+		socket.broadcast.emit('message', message);
 	});
 });
 
-http.listen(3000, () => {
-	console.log('listening on *:3000');
+http.listen(2000, () => {
+	console.log('listening on *:2000');
 });
