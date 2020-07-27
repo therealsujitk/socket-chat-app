@@ -17,7 +17,8 @@ io.on('connection', (socket) => {
 	});
 	
 	socket.on('message', (message) => {
-		socket.broadcast.emit('message', message);
+		if(message.trim() != '')
+			socket.broadcast.emit('message', message);
 	});
 });
 
