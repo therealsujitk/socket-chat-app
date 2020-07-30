@@ -2,6 +2,8 @@
 	<head>
 		<link rel="stylesheet" type="text/css" href="/assets/css/main.css">
 		<link href="https://fonts.googleapis.com/css2?family=Recursive&display=swap" rel="stylesheet">
+		<script src="/assets/js/main.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
 		<script>
 			var socket = io();
@@ -10,7 +12,21 @@
 		<title>Real-time chat application using socket.io</title>
 	</head>
 	<body>
-		<h2 id="header">Chat Application</h2>
+		<div id="header">
+			<span id="menu"><i class="fas fa-chevron-down fa-2x" onclick="toggleMenu();"></i></span>
+			<h2>Chat Application</h2>
+		</div>
+		<nav id="nav">
+			<span>Change Nickname</span>
+			</br></br>
+			<span>Privacy Policy</span>
+			</br></br>
+			<span>More Information</span>
+			</br></br>
+			<span>Open Issue</span>
+			</br></br>
+			<span>About Me</span>
+		</nav>
 		<table id="chat-interface">
 			<tr>
 				<th id="users-header">Online Users</th>
@@ -34,36 +50,60 @@
 			function calcHeight() {
 				let headerHeight = document.getElementById('header').offsetHeight;
 				let chatInterfaceHeaderHeight = document.getElementById('chat-header').offsetHeight;
-				
+
 				let chatInterfaceHeight = window.innerHeight - headerHeight - chatInterfaceHeaderHeight - 25 - 25 - 3;
 				document.documentElement.style.setProperty('--cih', `${chatInterfaceHeight}px`);
-				
+
 				let chatFooterHeight = document.getElementById('chat-footer').offsetHeight;
-				
+
 				let messagesHeight = chatInterfaceHeight - chatFooterHeight - 4;
 				document.documentElement.style.setProperty('--mh', `${messagesHeight}px`);
 			}
-			
+
 			calcHeight();
 			window.addEventListener("resize", calcHeight);
-			
+
+			var i = 0;
+			function toggleMenu (){
+			    let x = document.getElementById('menu');
+			    let y = document.getElementById('nav');
+
+			    if(i%2 == 0) {
+			        x.classList.add('rotate-menu');
+			        y.classList.add('show-nav');
+			    }
+			    else {
+			        x.classList.add('rotate-menu-again');
+			        y.classList.add('hide-nav');
+
+					setTimeout(function() {
+						x.classList.remove('rotate-menu');
+						x.classList.remove('rotate-menu-again');
+						y.classList.remove('show-nav');
+						y.classList.remove('hide-nav');
+					}, 500);
+			    }
+
+				++i;
+			}
+
 			function send() {
 				let message = document.getElementById('chat-box');
 				socket.emit('message', message.value.trim());
-				
+
 				if(message.value.trim() != '') {
 					let messages = document.getElementById('messages');
 					messages.innerHTML = messages.innerHTML + '<div style="width: 100%; text-align: right;"><div class="message" style="background: #fff; color: #000;">' + message.value.trim() + '</div></div>';
 				}
-				
+
 				message.value = '';
 			}
-			
+
 			document.getElementById('chat-box').addEventListener("keyup", function(e) {
 				if(e.keyCode == 13)
 					send();
 			});
-			
+
 			socket.on('message', (message) => {
 				let messages = document.getElementById('messages');
 				messages.innerHTML = messages.innerHTML + '<div style="width: 100%; text-align: left;"><div class="message" style="background: #000; color: #fff;">' + message + '</div></div>'
