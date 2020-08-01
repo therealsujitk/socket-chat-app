@@ -17,15 +17,13 @@
 			<h2>Chat Application</h2>
 		</div>
 		<nav id="nav">
-			<span>Change Nickname</span>
+			<span onclick="openUsername();">Change Username</span>
 			</br></br>
-			<span>Privacy Policy</span>
+			<span onclick="openPrivacy();">Privacy Policy</span>
 			</br></br>
-			<span>More Information</span>
+			<a href="https://github.com/therealsujitk/socketio-chat-app/issues" target="_blank">Open Issue</a>
 			</br></br>
-			<span>Open Issue</span>
-			</br></br>
-			<span>About Me</span>
+			<span onclick="openAbout();">About</span>
 		</nav>
 		<table id="chat-interface">
 			<tr>
@@ -44,7 +42,34 @@
 				</td>
 			</tr>
 		</table>
-		<div id="nickname-modal">
+		<div id="menu-background" onclick="toggleMenu();"></div>
+		<div id="modal-background" onclick="closeAll();"></div>
+		<div id="username-modal" class="modal show-modal">
+			<table cellpadding="0" cellspacing="0" style="width: 100%;">
+				<td class="header2" style="text-align: left;">Your Details</td>
+				<td style="text-align: right;"><i class="header link fas fa-times" onclick="closeAll()"></i></td>
+			</table>
+			<table cellpadding="0" cellspacing="0" style="width: 100%; padding-top: 20px;">
+				<td style="color: #808080;">Username:</td>
+				<td><input id="town-id" class="text-box" type="text" autocomplete="off" spellcheck="false"></input></td>
+			</table>
+			<input id="join" class="btn" type="button" style="margin-top: 10px;" value="Save"></input>
+		</div>
+		<div id="privacy-modal" class="modal">
+			<table cellpadding="0" cellspacing="0" style="width: 100%;">
+				<td class="header2" style="text-align: left;">Privacy Policy</td>
+				<td style="text-align: right;"><i class="header link fas fa-times" onclick="closeAll()"></i></td>
+			</table>
+			<p>No data entered here is stored anywhere. All messages sent by a user are automatically erased everywhere as soon as that user disconnects.</p>
+		</div>
+		<div id="about-modal" class="modal">
+			<table cellpadding="0" cellspacing="0" style="width: 100%;">
+				<td class="header2" style="text-align: left;">About</td>
+				<td style="text-align: right;"><i class="header link fas fa-times" onclick="closeAll()"></i></td>
+			</table>
+			<p>Built by: <a style="color: #fff;" href="https://instagram.com/therealsujitk" target="_blank">@therealsujitk</a>.</p>
+			<p style="padding-bottom: 10px;">This is an open-source project I built for research purpose. Feel free to fork it on <a style="color: #fff;" href="https://github.com/therealsujitk/socketio-chat-app" target="_blank">GitHub</a>.</p>
+			<span id="version">v1.0.0</span>
 		</div>
 		<script>
 			function calcHeight() {
@@ -67,10 +92,12 @@
 			function toggleMenu (){
 			    let x = document.getElementById('menu');
 			    let y = document.getElementById('nav');
+				let z = document.getElementById('menu-background');
 
 			    if(i%2 == 0) {
 			        x.classList.add('rotate-menu');
 			        y.classList.add('show-nav');
+					z.style.display = "block";
 			    }
 			    else {
 			        x.classList.add('rotate-menu-again');
@@ -81,6 +108,7 @@
 						x.classList.remove('rotate-menu-again');
 						y.classList.remove('show-nav');
 						y.classList.remove('hide-nav');
+						z.style.display = "none";
 					}, 500);
 			    }
 

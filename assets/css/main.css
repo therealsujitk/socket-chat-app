@@ -85,8 +85,13 @@ span {
 	cursor: pointer;
 }
 
+a {
+	color: #000;
+	text-decoration: none;
+}
+
 #chat-interface {
-	color: #778080;
+	color: #808080;
 	margin-top: 25px;
 	margin-bottom: 25px;
 	margin-left: 50%;
@@ -95,7 +100,7 @@ span {
 	transform: translate(-50%, 0%);
 }
 
-table, td, th {
+#chat-interface, #users-header, #chat-header, #users, #chat {
 	vertical-align: top;
 	border-style: solid;
 	border-width: 1px;
@@ -103,11 +108,11 @@ table, td, th {
 	border-spacing: 0;
 }
 
-th {
+#users-header, #chat-header {
 	padding: 15px 30px;
 }
 
-td {
+#users, #chat {
 	height: 60vh;
 	height: var(--cih);
 	max-height: 60vh;
@@ -153,7 +158,7 @@ td {
 	color: #fff;
 	border-style: solid;
 	border-width: 2px;
-	border-color: #778080;
+	border-color: #808080;
 	border-radius: 12px;
 	padding: 8px 16px;
 	margin: 15px 7.5px 15px 15px;
@@ -177,4 +182,119 @@ td {
 
 #send:hover {
 	background: #e2a904;
+}
+
+#menu-background, #modal-background {
+	position: fixed;
+	width: 100%;
+	height: 100vh;
+	top: 0;
+	background: #1a1a1a;
+	opacity: 0.9;
+	display: none;
+}
+
+#modal-background {
+	z-index: 3;
+	display: block;
+}
+
+.modal {
+	position: fixed;
+	text-align: center;
+	background: #212121;
+	width: 375px;
+	border-radius: 7px;
+	top: 0;
+	margin-top: 50vh;
+	margin-left: 50%;
+	padding: 20px;
+	box-shadow: 0 7px 14px #000;
+	transform: translate(-50%, -50%);
+	z-index: 4;
+	display: none;
+}
+
+.show-modal {
+	display: block;
+	animation: fadeIn 0.5s, zoomOut 0.5s;
+	animation-fill-mode: forwards;
+}
+
+.hide-modal {
+	animation: fadeOut 0.5s, zoomIn 0.5s;
+	animation-fill-mode: forwards;
+}
+
+@keyframes fadeIn {
+	from {opacity: 0; transform: translate(-50%, -50%);}
+	to {opacity: 1; transform: translate(-50%, -50%);}
+}
+
+@keyframes zoomIn {
+	from {transform: translate(-50%, -50%) scale(1);}
+	to {transform: translate(-50%, -50%) scale(1.2);}
+}
+
+@keyframes fadeOut {
+	from {opacity: 1; transform: translate(-50%, -50%);}
+	to {opacity: 0; transform: translate(-50%, -50%);}
+}
+
+@keyframes zoomOut {
+	from {transform: translate(-50%, -50%) scale(1.2);}
+	to {transform: translate(-50%, -50%) scale(1);}
+}
+
+.header {
+	color: #fbcc04;
+	cursor: pointer;
+}
+
+.header2 {
+	color: #fbcc04;
+	font-weight: bold;
+}
+
+p {
+	text-align: left;
+	color: #808080;
+	margin-bottom: 0;
+}
+
+.text-box {
+	background: #1a1a1a;
+	color: #fff;
+	width: 100%;
+	border-radius: 7px;
+	border-style: solid;
+	border-color: #1a1a1a;
+	padding: 7px;
+	transition: border 0.5s;
+}
+
+.text-box:focus {
+	border-style: solid;
+	border-color: #fbcc04;
+}
+
+.btn {
+	background: #fbcc04;
+	color: #121212;
+	border-radius: 7px;
+	border: none;
+	padding: 10px 20px;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.btn:hover {
+	background: #e2a904;
+}
+
+#version {
+	color: #808080;width: 100%;
+	text-align: center;
+	font-size: 12px;
+	font-weight: bold;
 }
