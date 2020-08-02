@@ -8,7 +8,7 @@
 		<script>
 			var socket = io();
 			var selectedUser = 'everyone';
-			var savedUsername = "undefined";
+			var savedUsername;
 		</script>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 		<title>Real-time chat application using socket.io</title>
@@ -121,6 +121,11 @@
 			}
 
 			function send() {
+				if(typeof savedUsername === "undefined") {
+					openUsername();
+					return;
+				}
+			
 				var message = document.getElementById('chat-box');
 				
 				if(selectedUser === "everyone") {
@@ -189,7 +194,7 @@
 				}
 			}
 			
-			document.getElementById('save-user').addEventListener("keyup", function(e) {
+			document.getElementById('username').addEventListener("keyup", function(e) {
 				if(e.keyCode == 13)
 					newUser();
 			});
@@ -210,6 +215,16 @@
 					chat.innerHTML = '<div id="messages-' + Object.keys(onlineUsers)[i] + '" class="messages" style="display: none;"></div>' + chat.innerHTML;
 					++i;
 				}
+			});
+			
+			socket.on('delete user', (id) => {
+				let user = 'user-' + id;
+				user = document.getElementById(user);
+				let messages = 'messages-' + id;
+				messages = document.getElementById(messages);
+				
+				user.remove();
+				messages.remove();
 			});
 		</script>
 	</body>
