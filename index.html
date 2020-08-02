@@ -7,7 +7,8 @@
 		<script src="/socket.io/socket.io.js"></script>
 		<script>
 			var socket = io();
-			var userSelected = 'everyone';
+			var selectedUser = 'everyone';
+			var savedUsername = "undefined";
 		</script>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 		<title>Real-time chat application using socket.io</title>
@@ -33,8 +34,8 @@
 			</tr>
 			<tr>
 				<td id="users">
-					<div style="height: 60vh; height: var(--cih);overflow-x: hidden; overflow-y: auto;">
-						<div id="user-everyone" class="user" style="background: #121212; color: #808080;" onclick="switchInterface(this.id); userSelected = this.id;">@everyone</div>
+					<div id="user-list" style="height: 60vh; height: var(--cih);overflow-x: hidden; overflow-y: auto;">
+						<div id="user-everyone" class="user" style="background: #121212; color: #808080;" onclick="switchInterface(this.id); selectedUser = this.id.slice(5);">@everyone</div>
 					</div>
 				</td>
 				<td id="chat">
@@ -120,12 +121,28 @@
 			}
 
 			function send() {
-				let message = document.getElementById('chat-box');
-				socket.emit('message', message.value.trim());
-
-				if(message.value.trim() != '') {
-					let messages = document.getElementById('messages-everyone');
-					messages.innerHTML = messages.innerHTML + '<div style="width: 100%; text-align: right;"><div class="message" style="background: #fff; color: #000;">' + message.value.trim() + '</div></div>';
+				var message = document.getElementById('chat-box');
+				
+				if(selectedUser === "everyone") {
+					let temp = {};
+					temp[savedUsername] = message.value.trim();
+					socket.emit('broadcast', temp);
+					
+					if(message.value.trim() != '') {
+						let messages = document.getElementById('messages-everyone');
+						messages.innerHTML = messages.innerHTML + '<div style="width: 100%; text-align: right;"><div class="message" style="background: #fff; color: #000;">' + message.value.trim() + '</div></div>';
+					}
+				}
+				else {
+					let temp = {};
+					temp[selectedUser] = message.value.trim();
+					socket.emit('private', temp);
+					
+					if(message.value.trim() != '') {
+						let messages = 'messages-' + selectedUser;
+						messages = document.getElementById(messages);
+						messages.innerHTML = messages.innerHTML + '<div style="width: 100%; text-align: right;"><div class="message" style="background: #fff; color: #000;">' + message.value.trim() + '</div></div>';
+					}
 				}
 
 				message.value = '';
@@ -136,9 +153,28 @@
 					send();
 			});
 
-			socket.on('message', (message) => {
-				let messages = document.getElementById('messages');
-				messages.innerHTML += '<div style="width: 100%; text-align: left;"><div class="message" style="background: #000; color: #fff;">' + message + '</div></div>'
+			socket.on('private', (data) => {
+				let id = Object.keys(data)[0];
+				let user = 'user-' + id;
+				user = document.getElementById(user);
+				let messages = 'messages-' + id;
+				messages = document.getElementById(messages);
+				
+				let message = data[id];
+				
+				messages.innerHTML += '<div style="width: 100%; text-align: left;"><div class="message" style="background: #000; color: #fff;">' + message + '</div></div>';
+				if(selectedUser != id)
+					user.style.color = "#fff";
+			});
+
+			socket.on('broadcast', (data) => {
+				let user = Object.keys(data)[0];
+				let messages = document.getElementById('messages-everyone');
+				let message = data[Object.keys(data)[0]];
+				messages.innerHTML += '<div style="width: 100%; text-align: left;"><div class="message" style="background: #000; color: #fff;"><b>' + user + '</b>: ' + message + '</div></div>';
+				
+				if(selectedUser != "everyone")
+					document.getElementById('user-everyone').style.color = "#fff";
 			});
 			
 			function newUser() {
@@ -149,6 +185,7 @@
 				else {
 					socket.emit('new user', username.value.trim());
 					closeAll();
+					savedUsername = username.value.trim();
 				}
 			}
 			
@@ -158,19 +195,19 @@
 			});
 			
 			socket.on('new user', (user) => {
-				let users = document.getElementById('users');
-				users.innerHTML += '<div id="user-' + user + '" class="user" style="background: none; color: #808080;">@' + user + '</div>';
+				let users = document.getElementById('user-list');
+				users.innerHTML += '<div id="user-' + Object.keys(user)[0] + '" class="user" style="background: none; color: #808080;" onclick="switchInterface(this.id); selectedUser = this.id.slice(5);">@' + user[Object.keys(user)[0]] + '</div>';
 				let chat = document.getElementById('chat');
-				chat.innerHTML = '<div id="messages-' + user + '" class="messages" style="display: none;"></div>' + chat.innerHTML;
+				chat.innerHTML = '<div id="messages-' + Object.keys(user)[0] + '" class="messages" style="display: none;"></div>' + chat.innerHTML;
 			});
 			
 			socket.on('online users', (onlineUsers) => {
 				let i = 0;
-				while(i < onlineUsers.length) {
-					let users = document.getElementById('users');
-					users.innerHTML += '<div id="user-' + onlineUsers[i] + '" class="user" style="background: none; color: #808080;" onclick="switchInterface(this.id); userSelected = this.id;">@' + onlineUsers[i] + '</div>';
+				while(i < Object.keys(onlineUsers).length) {
+					let users = document.getElementById('user-list');
+					users.innerHTML += '<div id="user-' + Object.keys(onlineUsers)[i] + '" class="user" style="background: none; color: #808080;" onclick="switchInterface(this.id); selectedUser = this.id.slice(5);">@' + onlineUsers[Object.keys(onlineUsers)[i]] + '</div>';
 					let chat = document.getElementById('chat');
-					chat.innerHTML = '<div id="messages-' + onlineUsers[i] + '" class="messages" style="display: none;"></div>' + chat.innerHTML;
+					chat.innerHTML = '<div id="messages-' + Object.keys(onlineUsers)[i] + '" class="messages" style="display: none;"></div>' + chat.innerHTML;
 					++i;
 				}
 			});

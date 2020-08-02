@@ -3,7 +3,7 @@ var app = express();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 
-var users = [];
+var users = {};
 
 app.get('/', (req, res) => {
 	res.sendFile(__dirname + '/index.html');
@@ -12,27 +12,34 @@ app.get('/', (req, res) => {
 app.use(express.static(__dirname + '/'));
 
 io.on('connection', (socket) => {
-	console.log('a user connected');
-	
 	socket.emit('online users', users);
 
 	socket.on('disconnect', () => {
-		console.log('a user disconnected');
+		delete users[socket.id];
+		io.emit('delete user', socket.id);
 	});
 
-	socket.on('message', (message) => {
-		if(message.trim() != '')
-			socket.broadcast.emit('message', message);
+	socket.on('broadcast', (data) => {
+		socket.broadcast.emit('broadcast', data);
+	});
+	
+	socket.on('private', (data) => {
+		let id = Object.keys(data)[0];
+		let temp = {};
+		temp[socket.id] = data[Object.keys(data)[0]];
+		io.to(id).emit('private', temp);
 	});
 	
 	socket.on('new user', (user) => {
 		if(user.trim() != '') {
-			socket.broadcast.emit('new user', user);
-			users.push(user);
+			let temp = {};
+			temp[socket.id] = user;			
+			socket.broadcast.emit('new user', temp);
+			users[socket.id] = user;
 		}
 	});
 });
 
-http.listen(2000, () => {
-	console.log('listening on *:2000');
+http.listen(3000, () => {
+	console.log('listening on *:3000');
 });
