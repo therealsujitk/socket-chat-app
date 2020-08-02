@@ -4,6 +4,8 @@ function openUsername() {
 	
 	x.classList.add("show-modal");
 	y.style.display = "block";
+	
+	document.getElementById('username').focus();
 }
 
 function openPrivacy() {
