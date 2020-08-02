@@ -42,7 +42,7 @@
 					<div id="messages-everyone" class="messages" style="display: block;"></div>
 					<div id="chat-footer">
 						<input id="chat-box" placeholder="Write your message..." autocomplete="off"></input>
-						<input id="send" type="button" value="Send" onclick="send()"></input>
+						<input id="send" type="button" value="Send" onclick="sendMessage();"></input>
 					</div>
 				</td>
 			</tr>
@@ -120,7 +120,7 @@
 				++i;
 			}
 
-			function send() {
+			function sendMessage() {
 				if(typeof savedUsername === "undefined") {
 					openUsername();
 					return;
@@ -153,9 +153,9 @@
 				message.value = '';
 			}
 
-			document.getElementById('chat-box').addEventListener("keyup", function(e) {
+			document.getElementById('chat-box').addEventListener("keydown", function(e) {
 				if(e.keyCode == 13)
-					send();
+					sendMessage();
 			});
 
 			socket.on('private', (data) => {
@@ -194,16 +194,25 @@
 				}
 			}
 			
-			document.getElementById('username').addEventListener("keyup", function(e) {
+			document.getElementById('username').addEventListener("keydown", function(e) {
 				if(e.keyCode == 13)
 					newUser();
 			});
 			
 			socket.on('new user', (user) => {
 				let users = document.getElementById('user-list');
-				users.innerHTML += '<div id="user-' + Object.keys(user)[0] + '" class="user" style="background: none; color: #808080;" onclick="switchInterface(this.id); selectedUser = this.id.slice(5);">@' + user[Object.keys(user)[0]] + '</div>';
-				let chat = document.getElementById('chat');
-				chat.innerHTML = '<div id="messages-' + Object.keys(user)[0] + '" class="messages" style="display: none;"></div>' + chat.innerHTML;
+				
+				let temp = 'user-' + Object.keys(user)[0];
+				if(document.getElementById(temp)) {
+					document.getElementById(temp).innerHTML = '@' + user[Object.keys(user)[0]];
+					if(selectedUser == Object.keys(user)[0])
+						document.getElementById('chat-header').innerHTML = '@' + user[Object.keys(user)[0]];
+				}
+				else {
+					users.innerHTML += '<div id="user-' + Object.keys(user)[0] + '" class="user" style="background: none; color: #808080;" onclick="switchInterface(this.id); selectedUser = this.id.slice(5);">@' + user[Object.keys(user)[0]] + '</div>';
+					let chat = document.getElementById('chat');
+					chat.innerHTML = '<div id="messages-' + Object.keys(user)[0] + '" class="messages" style="display: none;"></div>' + chat.innerHTML;
+				}
 			});
 			
 			socket.on('online users', (onlineUsers) => {
@@ -222,6 +231,12 @@
 				user = document.getElementById(user);
 				let messages = 'messages-' + id;
 				messages = document.getElementById(messages);
+				
+				if(selectedUser == id) {
+					messages.style.display = "none";
+					document.getElementById('messages-everyone').style.display = "block";
+					selectedUser = "everyone";
+				}
 				
 				user.remove();
 				messages.remove();
