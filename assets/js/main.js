@@ -56,3 +56,31 @@ function closeAll() {
 		a.style.display = "none";
 	}, 500);
 }
+
+function switchInterface(id) {
+	let user = document.getElementById(id);
+	
+	let chatHeader = document.getElementById('chat-header');
+	chatHeader.innerHTML = user.innerHTML;
+	
+	let users = document.getElementsByClassName('user');
+	let i = 0;
+	while(i < users.length) {
+		users[i].style.background = "none";
+		++i;
+	}
+	
+	user.style.background = "#121212";
+	user.style.color = "#808080";
+	
+	let messages = 'messages' + id.slice(4)
+	messages = document.getElementById(messages);
+	let allMessages = document.getElementsByClassName('messages');
+	i = 0;
+	while(i < allMessages.length) {
+		allMessages[i].style.display = "none";
+		++i;
+	}
+	
+	messages.style.display = "block";
+}

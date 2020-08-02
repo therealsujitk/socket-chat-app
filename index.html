@@ -7,6 +7,7 @@
 		<script src="/socket.io/socket.io.js"></script>
 		<script>
 			var socket = io();
+			var userSelected = 'everyone';
 		</script>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 		<title>Real-time chat application using socket.io</title>
@@ -32,10 +33,10 @@
 			</tr>
 			<tr>
 				<td id="users">
-					<div id="user-everyone" class="user" style="background: #121212; color: #808080;">@everyone</div>
+					<div id="user-everyone" class="user" style="background: #121212; color: #808080;" onclick="switchInterface(this.id); userSelected = this.id;">@everyone</div>
 				</td>
 				<td id="chat">
-					<div id="messages-everyone" class="messages"></div>
+					<div id="messages-everyone" class="messages" style="display: block;"></div>
 					<div id="chat-footer">
 						<input id="chat-box" placeholder="Write your message..." autocomplete="off"></input>
 						<input id="send" type="button" value="Send" onclick="send()"></input>
@@ -162,11 +163,13 @@
 			});
 			
 			socket.on('online users', (onlineUsers) => {
-				for(user in onlineUsers) {
+				let i = 0;
+				while(i < onlineUsers.length) {
 					let users = document.getElementById('users');
-					users.innerHTML += '<div id="user-' + onlineUsers[user] + '" class="user" style="background: none; color: #808080;">@' + onlineUsers[user] + '</div>';
+					users.innerHTML += '<div id="user-' + onlineUsers[i] + '" class="user" style="background: none; color: #808080;" onclick="switchInterface(this.id); userSelected = this.id;">@' + onlineUsers[i] + '</div>';
 					let chat = document.getElementById('chat');
-					chat.innerHTML = '<div id="messages-' + onlineUsers[user] + '" class="messages" style="display: none;"></div>' + chat.innerHTML;
+					chat.innerHTML = '<div id="messages-' + onlineUsers[i] + '" class="messages" style="display: none;"></div>' + chat.innerHTML;
+					++i;
 				}
 			});
 		</script>

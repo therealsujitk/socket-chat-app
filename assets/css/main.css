@@ -129,7 +129,7 @@ a {
 	width: 65%;
 }
 
-#messages {
+.messages {
 	height: var(--mh);
 	max-height: var(--mh);
 	overflow: auto;
@@ -297,4 +297,11 @@ p {
 	text-align: center;
 	font-size: 12px;
 	font-weight: bold;
+}
+
+.user {
+	width: calc(100% - 40px);
+	padding: 20px;
+	overflow: hidden;
+	cursor: pointer;
 }
