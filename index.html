@@ -33,7 +33,9 @@
 			</tr>
 			<tr>
 				<td id="users">
-					<div id="user-everyone" class="user" style="background: #121212; color: #808080;" onclick="switchInterface(this.id); userSelected = this.id;">@everyone</div>
+					<div style="height: 60vh; height: var(--cih);overflow-x: hidden; overflow-y: auto;">
+						<div id="user-everyone" class="user" style="background: #121212; color: #808080;" onclick="switchInterface(this.id); userSelected = this.id;">@everyone</div>
+					</div>
 				</td>
 				<td id="chat">
 					<div id="messages-everyone" class="messages" style="display: block;"></div>
@@ -78,7 +80,7 @@
 				let headerHeight = document.getElementById('header').offsetHeight;
 				let chatInterfaceHeaderHeight = document.getElementById('chat-header').offsetHeight;
 
-				let chatInterfaceHeight = window.innerHeight - headerHeight - chatInterfaceHeaderHeight - 25 - 25 - 3;
+				let chatInterfaceHeight = window.innerHeight - headerHeight - chatInterfaceHeaderHeight - 25 - 25 - 6;
 				document.documentElement.style.setProperty('--cih', `${chatInterfaceHeight}px`);
 
 				let chatFooterHeight = document.getElementById('chat-footer').offsetHeight;
