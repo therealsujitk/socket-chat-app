@@ -79,6 +79,8 @@
 		<script>
 			document.getElementById('username').focus();
 		
+			var calcMessages = 0;
+		
 			function calcHeight() {
 				let headerHeight = document.getElementById('header').offsetHeight;
 				let chatInterfaceHeaderHeight = document.getElementById('chat-header').offsetHeight;
@@ -90,6 +92,7 @@
 
 				let messagesHeight = chatInterfaceHeight - chatFooterHeight - 4;
 				document.documentElement.style.setProperty('--mh', `${messagesHeight}px`);
+				calcMessages = Math.round(messagesHeight);
 			}
 
 			calcHeight();
@@ -136,8 +139,13 @@
 					socket.emit('broadcast', temp);
 					
 					if(message.value.trim() != '') {
+						let flag = false;
 						let messages = document.getElementById('messages-everyone');
+						if(messages.scrollTop === messages.scrollHeight-calcMessages)
+							flag = true;
 						messages.innerHTML = messages.innerHTML + '<div style="width: 100%; text-align: right;"><div class="message" style="background: #fff; color: #000;">' + message.value.trim() + '</div></div>';
+						if(flag)
+							messages.scrollTop = messages.scrollHeight;
 					}
 				}
 				else {
@@ -146,9 +154,14 @@
 					socket.emit('private', temp);
 					
 					if(message.value.trim() != '') {
+						let flag = false;
 						let messages = 'messages-' + selectedUser;
 						messages = document.getElementById(messages);
+						if(messages.scrollTop === messages.scrollHeight-calcMessages)
+							flag = true;
 						messages.innerHTML = messages.innerHTML + '<div style="width: 100%; text-align: right;"><div class="message" style="background: #fff; color: #000;">' + message.value.trim() + '</div></div>';
+						if(flag)
+							messages.scrollTop = messages.scrollHeight;
 					}
 				}
 
@@ -163,22 +176,33 @@
 			socket.on('private', (data) => {
 				let id = Object.keys(data)[0];
 				let user = 'user-' + id;
+				let flag = false;
 				user = document.getElementById(user);
 				let messages = 'messages-' + id;
 				messages = document.getElementById(messages);
 				
+				if(messages.scrollTop === messages.scrollHeight-calcMessages)
+					flag = true;
+				
 				let message = data[id];
 				
 				messages.innerHTML += '<div style="width: 100%; text-align: left;"><div class="message" style="background: #000; color: #fff;">' + message + '</div></div>';
+				if(flag)
+					messages.scrollTop = messages.scrollHeight;
 				if(selectedUser != id)
 					user.style.color = "#fff";
 			});
 
 			socket.on('broadcast', (data) => {
+				let flag = false;
 				let user = Object.keys(data)[0];
 				let messages = document.getElementById('messages-everyone');
 				let message = data[Object.keys(data)[0]];
+				if(messages.scrollTop === messages.scrollHeight-calcMessages)
+					flag = true;
 				messages.innerHTML += '<div style="width: 100%; text-align: left;"><div class="message" style="background: #000; color: #fff;"><b>' + user + '</b>: ' + message + '</div></div>';
+				if(flag)
+					messages.scrollTop = messages.scrollHeight;
 				
 				if(selectedUser != "everyone")
 					document.getElementById('user-everyone').style.color = "#fff";
