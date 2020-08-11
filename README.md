@@ -11,7 +11,8 @@ A simple real-time chat application using socket.io for research purpose.
 ### Usage
 
 ```sh
-npm start
+$ npm install
+$ npm start
 ```
 
 ### Links
