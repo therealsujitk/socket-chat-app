@@ -10,10 +10,17 @@ A simple real-time chat application using socket.io for research purpose.
 
 ### Usage
 
+Run these commands at `localhost`:
 ```sh
 $ npm install
 $ npm start
 ```
+
+Alternatively you can deploy this app to heroku:
+
+[![](https://camo.githubusercontent.com/c0824806f5221ebb7d25e559568582dd39dd1170/68747470733a2f2f7777772e6865726f6b7563646e2e636f6d2f6465706c6f792f627574746f6e2e706e67)](https://heroku.com/deploy?template=https://github.com/therealsujitk/socketio-chat-app)
+
+[Click here](https://therealsujitk-socketio-chat.herokuapp.com/) to test this application.
 
 ### Links
 
