@@ -1,0 +1,17 @@
+{
+	"name": "socketio-chat-app",
+	"description": "A simple real-time chat application using socket.io for research purpose.",
+	"website": "https://therealsuji.tk",
+	"repository": "https://github.com/therealsujitk/socketio-chat-app",
+	"success_url": "/",
+	"keywords": [
+		"node",
+		"express",
+		"socket.io",
+		"realtime",
+		"websocket"
+	],
+	"env": {
+		"BUILDPACK_URL": "https://github.com/heroku/heroku-buildpack-nodejs"
+	}
+}
