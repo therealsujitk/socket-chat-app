@@ -24,4 +24,4 @@ Alternatively you can deploy this app to heroku:
 
 ### Links
 
-- [Donate on PayPal](https://paypal.me/suchitrakumar)
+- [Donate on PayPal](https://therealsuji.tk/donate)
