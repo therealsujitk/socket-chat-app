@@ -92,19 +92,30 @@ function switchInterface(id) {
 	
 	messages.style.display = "block";
 
+	if(window.innerWidth <= 600) {
+		document.getElementById('users').style.display = 'none';
+		document.getElementById('chat').style.display = 'block';
+		document.getElementById('back').style.display = 'inline';
+	}
 	document.getElementById('chat-box').focus();
 }
 
 function setIndex() {
-	let headerHeight = document.getElementById('header').offsetHeight;
-	let chatInterfaceHeaderHeight = document.getElementById('chat-header').offsetHeight;
+	var headerHeight = document.getElementById('header').offsetHeight;
+	var chatInterfaceHeaderHeight = document.getElementById('chat-header').offsetHeight;
 
-	let chatInterfaceHeight = window.innerHeight - headerHeight - chatInterfaceHeaderHeight - 25 - 25 - 6;
+	var chatInterfaceHeight = window.innerHeight - headerHeight - chatInterfaceHeaderHeight - 25 - 25 - 6;
+	if(window.innerWidth <= 600) {
+		chatInterfaceHeight = window.innerHeight - headerHeight - 6;
+	}
 	document.documentElement.style.setProperty('--cih', `${chatInterfaceHeight}px`);
 
-	let chatFooterHeight = document.getElementById('chat-footer').offsetHeight;
+	var chatFooterHeight = document.getElementById('chat-footer').offsetHeight;
 
-	let messagesHeight = chatInterfaceHeight - chatFooterHeight - 4;
+	var messagesHeight = chatInterfaceHeight - chatFooterHeight - 4;
+	if(window.innerWidth <= 600) {
+		messagesHeight -= 25 + 25 + 12;
+	}
 	document.documentElement.style.setProperty('--mh', `${messagesHeight}px`);
 	calcMessages = Math.round(messagesHeight);
 
@@ -286,3 +297,9 @@ socket.on('delete user', (id) => {
 	user.remove();
 	messages.remove();
 });
+
+function goBack() {
+	document.getElementById('users').style.display = 'block';
+	document.getElementById('chat').style.display = 'none';
+	document.getElementById('back').style.display = 'none';
+}
