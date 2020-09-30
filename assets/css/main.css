@@ -29,6 +29,15 @@ h2 {
 	transform: translate(-50px, 0px) rotate(0deg);
 }
 
+#back {
+	position: absolute;
+	display: none;
+	margin-left: -50%;
+	color: #1a1a1a;
+	cursor: pointer;
+	transform: translate(20px, 0px);
+}
+
 .rotate-menu {
 	animation: rotateMenu 0.5s;
 	animation-fill-mode: forwards;
@@ -305,4 +314,60 @@ p {
 	padding: 20px;
 	overflow: hidden;
 	cursor: pointer;
+}
+
+@media only screen and (max-width: 600px) {
+	.modal {
+		width: 100%;
+		border-radius: 0px;
+		padding: 20px 0px 20px 0px;
+		transform: translate(-50%, 0%);
+	}
+
+	.show-modal {
+		display: block;
+		animation: slideIn 0.5s;
+		animation-fill-mode: forwards;
+	}
+	
+	.hide-modal {
+		animation: slideOut 0.5s;
+		animation-fill-mode: forwards;
+	}
+
+	@keyframes slideIn {
+		from {transform: translate(-50%, 0%); margin-top: 100vh;}
+		to {transform: translate(-50%, -50%); margin-top: 50vh;}
+	}
+	
+	@keyframes slideOut {
+		from {transform: translate(-50%, -50%); margin-top: 50vh;}
+		to {transform: translate(0-5%, 0%); margin-top: 100vh;}
+	}
+
+	table, p {
+		padding: 0px 20px 0px 20px;
+	}
+
+	#chat-interface {
+		border: none;
+		width: 100%;
+		margin-top: 0px;
+		margin-bottom: 0px;
+		padding: 0px;
+		box-shadow: none;
+	}
+
+	#users-header {
+		display: none;
+	}
+
+	#users {
+		border: none;
+	}
+
+	#chat-header, #chat {
+		display: none;
+		border: none;
+	}
 }

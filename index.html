@@ -10,6 +10,7 @@
 	</head>
 	<body>
 		<div id="header">
+			<span id="back"><i class="fas fa-chevron-down fa-2x fa-rotate-90" onclick="goBack();"></i></span>
 			<span id="menu"><i class="fas fa-chevron-down fa-2x" onclick="toggleMenu();"></i></span>
 			<h2>Chat Application</h2>
 		</div>
@@ -34,7 +35,7 @@
 					</div>
 				</td>
 				<td id="chat">
-					<div id="messages-everyone" class="messages" style="display: block;"></div>
+					<div id="messages-everyone" class="messages""></div>
 					<div id="chat-footer">
 						<input id="chat-box" placeholder="Write your message..." autocomplete="off" onkeyup="enterSend(event);"></input>
 						<input id="send" type="button" value="Send" onclick="sendMessage();"></input>
@@ -69,7 +70,7 @@
 			</table>
 			<p>Built by: <a style="color: #fff;" href="https://therealsuji.tk" target="_blank">@therealsujitk</a>.</p>
 			<p style="padding-bottom: 10px;">This is an open-source project I built for research purpose. Feel free to fork it on <a style="color: #fff;" href="https://github.com/therealsujitk/socketio-chat-app" target="_blank">GitHub</a>.</p>
-			<span id="version">v1.0.1</span>
+			<span id="version">v2.0.0</span>
 		</div>
 		<script>setIndex();</script>
 	</body>
