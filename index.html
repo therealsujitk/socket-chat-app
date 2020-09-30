@@ -2,14 +2,9 @@
 	<head>
 		<link rel="stylesheet" type="text/css" href="/assets/css/main.css">
 		<link href="https://fonts.googleapis.com/css2?family=Recursive&display=swap" rel="stylesheet">
+		<script src="/socket.io/socket.io.js"></script>
 		<script src="/assets/js/main.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>
-		<script src="/socket.io/socket.io.js"></script>
-		<script>
-			var socket = io();
-			var selectedUser = 'everyone';
-			var savedUsername;
-		</script>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 		<title>Real-time chat application using socket.io</title>
 	</head>
@@ -41,7 +36,7 @@
 				<td id="chat">
 					<div id="messages-everyone" class="messages" style="display: block;"></div>
 					<div id="chat-footer">
-						<input id="chat-box" placeholder="Write your message..." autocomplete="off"></input>
+						<input id="chat-box" placeholder="Write your message..." autocomplete="off" onkeyup="enterSend(event);"></input>
 						<input id="send" type="button" value="Send" onclick="sendMessage();"></input>
 					</div>
 				</td>
@@ -56,7 +51,7 @@
 			</table>
 			<table cellpadding="0" cellspacing="0" style="width: 100%; padding-top: 20px;">
 				<td style="color: #808080;">Username:</td>
-				<td><input id="username" class="text-box" type="text" autocomplete="off" spellcheck="false"></input></td>
+				<td><input id="username" class="text-box" type="text" autocomplete="off" spellcheck="false" onkeyup="enterUser(event);"></input></td>
 			</table>
 			<input id="save-user" class="btn" type="button" style="margin-top: 10px;" value="Save" onclick="newUser();"></input>
 		</div>
@@ -76,197 +71,6 @@
 			<p style="padding-bottom: 10px;">This is an open-source project I built for research purpose. Feel free to fork it on <a style="color: #fff;" href="https://github.com/therealsujitk/socketio-chat-app" target="_blank">GitHub</a>.</p>
 			<span id="version">v1.0.0</span>
 		</div>
-		<script>
-			document.getElementById('username').focus();
-		
-			var calcMessages = 0;
-		
-			function calcHeight() {
-				let headerHeight = document.getElementById('header').offsetHeight;
-				let chatInterfaceHeaderHeight = document.getElementById('chat-header').offsetHeight;
-
-				let chatInterfaceHeight = window.innerHeight - headerHeight - chatInterfaceHeaderHeight - 25 - 25 - 6;
-				document.documentElement.style.setProperty('--cih', `${chatInterfaceHeight}px`);
-
-				let chatFooterHeight = document.getElementById('chat-footer').offsetHeight;
-
-				let messagesHeight = chatInterfaceHeight - chatFooterHeight - 4;
-				document.documentElement.style.setProperty('--mh', `${messagesHeight}px`);
-				calcMessages = Math.round(messagesHeight);
-			}
-
-			calcHeight();
-			window.addEventListener("resize", calcHeight);
-
-			var i = 0;
-			function toggleMenu (){
-			    let x = document.getElementById('menu');
-			    let y = document.getElementById('nav');
-				let z = document.getElementById('menu-background');
-
-			    if(i%2 == 0) {
-			        x.classList.add('rotate-menu');
-			        y.classList.add('show-nav');
-					z.style.display = "block";
-			    }
-			    else {
-			        x.classList.add('rotate-menu-again');
-			        y.classList.add('hide-nav');
-
-					setTimeout(function() {
-						x.classList.remove('rotate-menu');
-						x.classList.remove('rotate-menu-again');
-						y.classList.remove('show-nav');
-						y.classList.remove('hide-nav');
-						z.style.display = "none";
-					}, 500);
-			    }
-
-				++i;
-			}
-
-			function sendMessage() {
-				if(typeof savedUsername === "undefined") {
-					openUsername();
-					return;
-				}
-			
-				var message = document.getElementById('chat-box');
-				
-				if(selectedUser === "everyone") {
-					let temp = {};
-					temp[savedUsername] = message.value.trim();
-					socket.emit('broadcast', temp);
-					
-					if(message.value.trim() != '') {
-						let flag = false;
-						let messages = document.getElementById('messages-everyone');
-						if(messages.scrollTop === messages.scrollHeight-calcMessages)
-							flag = true;
-						messages.innerHTML = messages.innerHTML + '<div style="width: 100%; text-align: right;"><div class="message" style="background: #fff; color: #000;">' + message.value.trim() + '</div></div>';
-						if(flag)
-							messages.scrollTop = messages.scrollHeight;
-					}
-				}
-				else {
-					let temp = {};
-					temp[selectedUser] = message.value.trim();
-					socket.emit('private', temp);
-					
-					if(message.value.trim() != '') {
-						let flag = false;
-						let messages = 'messages-' + selectedUser;
-						messages = document.getElementById(messages);
-						if(messages.scrollTop === messages.scrollHeight-calcMessages)
-							flag = true;
-						messages.innerHTML = messages.innerHTML + '<div style="width: 100%; text-align: right;"><div class="message" style="background: #fff; color: #000;">' + message.value.trim() + '</div></div>';
-						if(flag)
-							messages.scrollTop = messages.scrollHeight;
-					}
-				}
-
-				message.value = '';
-			}
-
-			document.getElementById('chat-box').addEventListener("keydown", function(e) {
-				if(e.keyCode == 13)
-					sendMessage();
-			});
-
-			socket.on('private', (data) => {
-				let id = Object.keys(data)[0];
-				let user = 'user-' + id;
-				let flag = false;
-				user = document.getElementById(user);
-				let messages = 'messages-' + id;
-				messages = document.getElementById(messages);
-				
-				if(messages.scrollTop === messages.scrollHeight-calcMessages)
-					flag = true;
-				
-				let message = data[id];
-				
-				messages.innerHTML += '<div style="width: 100%; text-align: left;"><div class="message" style="background: #000; color: #fff;">' + message + '</div></div>';
-				if(flag)
-					messages.scrollTop = messages.scrollHeight;
-				if(selectedUser != id)
-					user.style.color = "#fff";
-			});
-
-			socket.on('broadcast', (data) => {
-				let flag = false;
-				let user = Object.keys(data)[0];
-				let messages = document.getElementById('messages-everyone');
-				let message = data[Object.keys(data)[0]];
-				if(messages.scrollTop === messages.scrollHeight-calcMessages)
-					flag = true;
-				messages.innerHTML += '<div style="width: 100%; text-align: left;"><div class="message" style="background: #000; color: #fff;"><b>' + user + '</b>: ' + message + '</div></div>';
-				if(flag)
-					messages.scrollTop = messages.scrollHeight;
-				
-				if(selectedUser != "everyone")
-					document.getElementById('user-everyone').style.color = "#fff";
-			});
-			
-			function newUser() {
-				let username = document.getElementById('username');
-				
-				if(username.value.trim() == '')
-					return;
-				else {
-					socket.emit('new user', username.value.trim());
-					closeAll();
-					savedUsername = username.value.trim();
-				}
-			}
-			
-			document.getElementById('username').addEventListener("keydown", function(e) {
-				if(e.keyCode == 13)
-					newUser();
-			});
-			
-			socket.on('new user', (user) => {
-				let users = document.getElementById('user-list');
-				
-				let temp = 'user-' + Object.keys(user)[0];
-				if(document.getElementById(temp)) {
-					document.getElementById(temp).innerHTML = '@' + user[Object.keys(user)[0]];
-					if(selectedUser == Object.keys(user)[0])
-						document.getElementById('chat-header').innerHTML = '@' + user[Object.keys(user)[0]];
-				}
-				else {
-					users.innerHTML += '<div id="user-' + Object.keys(user)[0] + '" class="user" style="background: none; color: #808080;" onclick="switchInterface(this.id); selectedUser = this.id.slice(5);">@' + user[Object.keys(user)[0]] + '</div>';
-					let chat = document.getElementById('chat');
-					chat.innerHTML = '<div id="messages-' + Object.keys(user)[0] + '" class="messages" style="display: none;"></div>' + chat.innerHTML;
-				}
-			});
-			
-			socket.on('online users', (onlineUsers) => {
-				let i = 0;
-				while(i < Object.keys(onlineUsers).length) {
-					let users = document.getElementById('user-list');
-					users.innerHTML += '<div id="user-' + Object.keys(onlineUsers)[i] + '" class="user" style="background: none; color: #808080;" onclick="switchInterface(this.id); selectedUser = this.id.slice(5);">@' + onlineUsers[Object.keys(onlineUsers)[i]] + '</div>';
-					let chat = document.getElementById('chat');
-					chat.innerHTML = '<div id="messages-' + Object.keys(onlineUsers)[i] + '" class="messages" style="display: none;"></div>' + chat.innerHTML;
-					++i;
-				}
-			});
-			
-			socket.on('delete user', (id) => {
-				let user = 'user-' + id;
-				user = document.getElementById(user);
-				let messages = 'messages-' + id;
-				messages = document.getElementById(messages);
-				
-				if(selectedUser == id) {
-					messages.style.display = "none";
-					document.getElementById('messages-everyone').style.display = "block";
-					selectedUser = "everyone";
-				}
-				
-				user.remove();
-				messages.remove();
-			});
-		</script>
+		<script>setIndex();</script>
 	</body>
 </html>
